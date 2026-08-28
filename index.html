@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine Invitation ✨</title>
+  <!-- Google Font Retro & Pixel -->
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #fce4ec;
+      background-image: radial-gradient(#f8bbd0 1px, transparent 1px);
+      background-size: 20px 20px;
+      font-family: 'VT323', monospace;
+      display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; padding: 20px;
+    }
+
+    .card {
+      background: #ffffff; border: 4px solid #000000; box-shadow: 6px 6px 0px #000000; border-radius: 12px; padding: 25px 20px; width: 100%; max-width: 360px; text-align: center; position: relative;
+      z-index: 2; /* Biar card tetap berada di atas emoticon */
+    }
+
+    h1 { font-size: 1.8rem; letter-spacing: 1px; color: #000000; margin-bottom: 20px; text-transform: uppercase; }
+
+    .media-box {
+      border: 3px solid #000000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; background: #f8f9fa; height: 220px; display: flex; justify-content: center; align-items: center;
+    }
+
+    .media-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .attempt-text { font-size: 1.2rem; color: #555; margin-bottom: 5px; }
+    .caption-text { font-size: 1.3rem; color: #d63384; font-weight: bold; margin-bottom: 15px; }
+
+    .btn-group { display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; min-height: 60px; }
+
+    button {
+      font-family: 'VT323', monospace; font-size: 1.4rem; padding: 8px 20px; border: 3px solid #000000; box-shadow: 3px 3px 0px #000000; border-radius: 6px; cursor: pointer; font-weight: bold; transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000000; }
+    .btn-pink { background-color: #ff80ab; color: #000; }
+    .btn-green { background-color: #69f0ae; color: #000; }
+    .btn-red { background-color: #ff5252; color: #fff; }
+
+    .gallery { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+    .gallery-img { width: 100%; border: 3px solid #000; border-radius: 8px; box-shadow: 4px 4px 0px #000; }
+    .hidden { display: none !important; }
+
+    .typing-cursor {
+      display: inline-block; width: 8px; height: 1.2rem; background-color: #000; margin-left: 4px; animation: blink 0.7s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* --- [TAMBAHAN CSS 1] ANIMASI EMOTICON LOVE BERJATUHAN --- */
+    .heart {
+      position: fixed;
+      top: -20px;
+      font-size: 1.5rem;
+      user-select: none;
+      pointer-events: none;
+      z-index: 1;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STEP 1: Pembuka (Typing Effect) -->
+  <div id="step-1" class="card">
+    <h1 style="font-size: 1.5rem; margin-top: 10px; min-height: 80px;">
+      <span id="typed-text"></span><span id="cursor" class="typing-cursor"></span>
+    </h1>
+    <button id="start-btn" class="btn-pink hidden" onclick="goToStep(2)">Proceed</button>
+  </div>
+
+  <!-- STEP 2: Pertanyaan Utama (Yes/No) -->
+  <div id="step-2" class="card hidden">
+    <div id="meme-container" class="media-box hidden">
+      <img id="meme-img" src="" alt="Meme">
+    </div>
+    
+    <p id="caption-text" class="caption-text hidden"></p>
+    <p id="attempts-count" class="attempt-text hidden">Attempts: 0/10</p>
+
+    <h1 id="main-question">MAU GAA NGEDATE SAMA AKUUU?????</h1>
+
+    <div class="btn-group">
+      <button id="yes-btn" class="btn-green" onclick="acceptProposal()">Yes</button>
+      <button id="no-btn" class="btn-red" onclick="handleNo()">No</button>
+    </div>
+    <p id="hint-text" style="font-size: 1rem; color: #777; margin-top: 10px;">Try clicking No... if you dare</p>
+  </div>
+
+  <!-- STEP 3: Sukses -->
+  <div id="step-3" class="card hidden">
+    <div class="media-box">
+      <img src="https://i.pinimg.com/736x/96/dd/5e/96dd5e9ed01516e054dfae85e77b724a.jpg" alt="Happy Reaksi">
+    </div>
+    <h1>I knew you would say yes!</h1>
+    <p class="attempt-text">You can't resist this, baby!</p>
+    <button class="btn-green" onclick="goToStep(4)">Proceed</button>
+  </div>
+
+  <!-- STEP 4: Galeri Kebersamaan -->
+  <div id="step-4" class="card hidden">
+    <h1>See You Soon! ❤️</h1>
+    <h2>Kenapa hari sabtu? karena sabtu saturday= saturdate </h2>
+    <div class="gallery">
+      <img class="gallery-img" src="https://i.pinimg.com/736x/22/12/d5/2212d5eb0b6bcde3e8758a5681ddbc3b.jpg" alt="Foto 1">
+    </div>
+  </div>
+
+  <script>
+    // --- FITUR TYPING EFFECT ---
+    const textToType = "Hi Jilaann, ada yang mau aku tanyainn....";
+    let typeIndex = 0;
+    const speed = 70;
+
+    function typeWriter() {
+      if (typeIndex < textToType.length) {
+        document.getElementById("typed-text").innerHTML += textToType.charAt(typeIndex);
+        typeIndex++;
+        setTimeout(typeWriter, speed);
+      } else {
+        document.getElementById("cursor").style.display = "none";
+        document.getElementById("start-btn").classList.remove("hidden");
+      }
+    }
+
+    // --- [TAMBAHAN JS 1] FUNGSI MEMBUAT LOVE BERJATUHAN ---
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerText = '❤️'; // Bisa diganti emoji lain seperti '💖' atau '💕'
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = Math.random() * 2 + 3 + 's'; // Kecepatan jatuh antara 3-5 detik
+      heart.style.fontSize = Math.random() * 10 + 15 + 'px'; // Ukuran bervariasi
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 5000);
+    }
+
+    // --- [TAMBAHAN JS 2] JALANKAN SAAT HALAMAN DIBUKA ---
+    window.onload = function() {
+      typeWriter();
+      setInterval(createHeart, 300); // Emoticon muncul setiap 300ms
+    };
+
+    // --- ALUR GAME UTAMA ---
+    let attempts = 0;
+    const maxAttempts = 10;
+    let yesScale = 1;
+
+    const memes = [
+      { img: "https://i.pinimg.com/736x/10/3e/c8/103ec8d6ae5b9b7b38cd2614777aae90.jpg", text: "Yakin gak mau?" },
+      { img: "https://i.pinimg.com/1200x/f1/15/a4/f115a43bea0f3942173e51ca266c08af.jpg", text: "Pikir-pikir dulu deh..." },
+      { img: "https://i.pinimg.com/1200x/1b/75/f7/1b75f72a20ccba071d4452b34bf206ec.jpg", text: "Pliss jangan ditolak 🥺" },
+      { img: "https://i.pinimg.com/736x/0b/b1/78/0bb1784d51187c7a34430313b360ff6f.jpg", text: "Kok tega banget sih?" },
+      { img: "https://i.pinimg.com/736x/b2/e0/f5/b2e0f5e40eefa2aeead582ddb0011e0a.jpg", text: "Masih ditekan tombol No-nya?!" },
+      { img: "https://i.pinimg.com/736x/20/61/ac/2061ac8178aa3b2f0a2eba3c61a2915a.jpg", text: "Aku nangis nih bentar lagi... 😭" },
+      { img: "https://i.pinimg.com/1200x/a6/e0/1c/a6e01c3674564fb01b3c479cd3b3dea2.jpg", text: "Ayo dong tekan tombol Yes!" },
+      { img: "https://i.pinimg.com/736x/9e/d6/d0/9ed6d07dc4641bf8e056b9e1fa8c3be5.jpg", text: "Kesempatan makin menipis loh..." },
+      { img: "https://i.pinimg.com/736x/cb/7a/25/cb7a2592bc71d420f98b8d9597481b1c.jpg", text: "Satu kali lagi tombol No bakal hilang!" },
+      { img: "https://i.pinimg.com/736x/b4/af/c2/b4afc23431834788c8ed44dfaaa76dc5.jpg", text: "Udah limit! Sekarang harus pilih YES! 😜" }
+    ];
+
+    function goToStep(stepNumber) {
+      document.querySelectorAll('.card').forEach(card => card.classList.add('hidden'));
+      document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+    }
+
+    function handleNo() {
+      if (attempts < maxAttempts) {
+        attempts++;
+        
+        const memeContainer = document.getElementById("meme-container");
+        const memeImg = document.getElementById("meme-img");
+        const captionText = document.getElementById("caption-text");
+        const attemptsCount = document.getElementById("attempts-count");
+        const noBtn = document.getElementById("no-btn");
+        const yesBtn = document.getElementById("yes-btn");
+
+        memeContainer.classList.remove("hidden");
+        captionText.classList.remove("hidden");
+        attemptsCount.classList.remove("hidden");
+
+        const currentData = memes[attempts - 1];
+        memeImg.src = currentData.img;
+        captionText.innerText = currentData.text;
+        attemptsCount.innerText = `Attempts: ${attempts}/${maxAttempts}`;
+
+        yesScale += 0.25;
+        yesBtn.style.transform = `scale(${yesScale})`;
+
+        if (attempts === maxAttempts) {
+          noBtn.style.display = "none";
+        } else {
+          noBtn.style.position = "fixed";
+          const padding = 40;
+          const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+          const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+          const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+          const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+          noBtn.style.left = `${randomX}px`;
+          noBtn.style.top = `${randomY}px`;
+        }
+      }
+    }
+
+    function acceptProposal() {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      goToStep(3);
+    }
+  </script>
+</body>
+</html>
